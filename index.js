@@ -1,36 +1,33 @@
 const { token } = require('./config.json')
 const {
   Client,
-  Events,
   GatewayIntentBits,
-  SlashCommandBuilder
 } = require('discord.js')
+const fs = require('node:fs')
+const path = require('node:path')
 
-const client = new Client({ intents: [GatewayIntentBits.Guilds] })
-
-client.once(Events.ClientReady, c => {
-  console.log(`Logged in as ${c.user.tag}`)
-  const ping = new SlashCommandBuilder()
-    .setName('ping')
-    .setDescription('replies with pong')
-
-  const hi = new SlashCommandBuilder()
-    .setName('hello')
-    .setDescription('says hello')
-
-  client.application.commands.create(ping, '1009514812444786688')
-  client.application.commands.create(hi, '1009514812444786688')
+const client = new Client({
+  intents: [
+    GatewayIntentBits.Guilds,
+    GatewayIntentBits.GuildMembers,
+    GatewayIntentBits.GuildMessages,
+    GatewayIntentBits.MessageContent,
+  ]
 })
 
-client.on(Events.InteractionCreate, interaction => {
-  if (!interaction.isChatInputCommand()) return
-  if (interaction.commandName === 'ping') {
-    interaction.reply('pong!')
+const eventsPath = path.join(__dirname, 'events')
+const eventFiles = fs
+  .readdirSync(eventsPath)
+  .filter(file => file.endsWith('.js'))
+
+for (const file of eventFiles) {
+  const filePath = path.join(eventsPath, file)
+  const event = require(filePath)
+  if (event.once) {
+    client.once(event.name, (...args) => event.execute(...args))
+  } else {
+    client.on(event.name, (...args) => event.execute(...args))
   }
-  if (interaction.commandName === 'hello') {
-    interaction.reply(`Hello ${interaction.user.tag}`)
-  }
-  console.log(interaction)
-})
+}
 
 client.login(token)
