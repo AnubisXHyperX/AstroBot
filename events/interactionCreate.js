@@ -8,14 +8,32 @@ client.commands = getCommands('./commands')
 module.exports = {
   name: 'interactionCreate',
   async execute (interaction) {
-    if (!interaction.isChatInputCommand()) return
-    let command = client.commands.get(interaction.commandName)
+    if (interaction.isChatInputCommand()) {
+      const command = client.commands.get(interaction.commandName)
 
-    try {
-      if (interaction.replied) return
-      command.execute(interaction)
-    } catch (error) {
-      console.error
+      try {
+        if (interaction.replied) return
+        await command.execute(interaction)
+      } catch (error) {
+        console.error(error)
+        await interaction.reply({
+          content: 'There was an error while executing this command!',
+          ephemeral: true
+        })
+      }
+    } else if (interaction.isButton()) {
+      const command = interaction.message.interaction.commandName
+      // console.log(interaction.message.interaction.commandName)
+      let buttonHandler
+      switch (command) {
+        case 'modmail':
+          buttonHandler = require('./modmail')
+          break
+        case 'verify':
+          buttonHandler = require('./verify')
+          break
+      }
+      await buttonHandler.execute(interaction, client)
     }
   }
 }
