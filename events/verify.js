@@ -8,7 +8,7 @@ module.exports = {
       const role = guild.roles.cache.find(role => role.name === 'Verified') // Replace with your role name or ID
       const lobby = guild.channels.cache.find(
         channel => channel.name === 'lobby'
-      ) // Replace with your channel name or ID
+      ) 
 
       if (!role) {
         console.error('Verification role not found')
@@ -45,7 +45,6 @@ module.exports = {
         return
       }
 
-      // Check if the bot has the necessary permissions
       const botMember = await guild.members.fetch(client.id).catch(err => {
         console.error('Failed to fetch bot member:', err)
         return null
@@ -61,22 +60,6 @@ module.exports = {
         setTimeout(() => interaction.deleteReply(), 5000)
         return
       }
-
-      //   if (!botMember.permissions.has('MANAGE_ROLES')) {
-      //     await interaction.reply({
-      //       content: 'I do not have permission to assign roles. Please contact an admin.',
-      //       ephemeral: true
-      //     });
-      //     return;
-      //   }
-
-      //   if (botMember.roles.highest.position <= role.position) {
-      //     await interaction.reply({
-      //       content: 'My role is not high enough to assign the verification role. Please contact an admin.',
-      //       ephemeral: true
-      //     });
-      //     return;
-      //   }
 
       try {
         await member.roles.add(role)

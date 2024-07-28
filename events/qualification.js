@@ -16,8 +16,8 @@ module.exports = {
 
     if (!['join', 'leave', 'lock'].includes(action)) return
 
-    const adminRoleId = '1009518652913098882' // Replace with your Admin role ID
-    const fixedChannelId = '1113829045600276510' // Fixed voice channel ID
+    const adminRoleId = '1009518652913098882' 
+    const fixedChannelId = '1113829045600276510'
 
     let instructorTags = []
     const message = interaction.message

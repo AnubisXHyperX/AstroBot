@@ -60,7 +60,7 @@ module.exports = {
       .filter(choice =>
         choice.name.toLowerCase().includes(focusedValue.toLowerCase())
       )
-      .slice(0, 25); // Limit to 25 choices
+      .slice(0, 25);
 
     console.log('Filtered choices:', filtered);
 

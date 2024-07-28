@@ -23,7 +23,6 @@ module.exports = {
       }
     } else if (interaction.isButton()) {
       const command = interaction.message.interaction.commandName
-      // console.log(interaction.message.interaction.commandName)
       let buttonHandler
       switch (command) {
         case 'modmail':

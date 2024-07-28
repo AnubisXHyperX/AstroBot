@@ -28,7 +28,7 @@ const {
   
       const modmailCategory = guild.channels.cache.find(
         c => c.name === 'modmails' && c.type === 4
-      ); // 4 for category
+      );
   
       const permissions = [
         {
@@ -56,7 +56,7 @@ const {
   
       const channel = await guild.channels.create({
         name: `${targetUser.username}-modmail`,
-        type: 0, // 0 for text
+        type: 0,
         topic: `${targetUser.id}`,
         parent: modmailCategory ? modmailCategory.id : null,
         permissionOverwrites: permissions

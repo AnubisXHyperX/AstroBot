@@ -20,7 +20,7 @@ module.exports = {
 
       const modmailCategory = guild.channels.cache.find(
         c => c.name === 'modmails' && c.type === 4
-      ) // 4 for category
+      ) 
 
       const permissions = [
         {
@@ -48,7 +48,7 @@ module.exports = {
 
       const channel = await guild.channels.create({
         name: `${user.username}-modmail`,
-        type: 0, // 0 for text
+        type: 0,
         topic: `${user.id}`,
         parent: modmailCategory ? modmailCategory.id : null,
         permissionOverwrites: permissions
@@ -93,7 +93,6 @@ module.exports = {
           }:R>\nThank you for contacting Astro staff <:jwst:1009707101360242720>.`
         )
 
-        // Use a setTimeout to wait before deleting the message and sending the follow-up message
         setTimeout(async () => {
           await msg.delete()
           const closeMessage = await channel.send(
@@ -105,15 +104,13 @@ module.exports = {
             SendMessages: false,
             ReadMessageHistory: false
           })
-          // Wait for 1 second before sending the staff communication message
           setTimeout(async () => {
             await channel.send(
               `>>> **${onDutyRole}: This modmail is now closed. Staff may communicate freely.**`
             )
           }, 3000)
-        }, 21000) // wait for 21 seconds before deleting the message
+        }, 21000) 
 
-        // Here you can add logic to archive the modmail if needed, e.g. saving the message content to a database.
       } else {
         await interaction.reply({
           content:
