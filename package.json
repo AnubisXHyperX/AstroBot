@@ -12,6 +12,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@prisma/client": "^5.17.0",
     "axios": "^1.7.2",
     "cheerio": "^1.0.0-rc.12",
     "discord.js": "^14.15.3",

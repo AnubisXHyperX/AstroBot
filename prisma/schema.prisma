@@ -1,20 +1,57 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
-generator client {
-  provider = "prisma-client-js"
-}
-
 datasource db {
   provider = "sqlite"
   url      = "file:./dev.db"
 }
 
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Archive {
+  id      Int    @id @default(autoincrement())
+  msgName String
+  msgId   String
+  modmail String
+}
+
+model Gear {
+  id          Int    @id @default(autoincrement())
+  userId      String
+  telescope   String
+  mount       String
+  camera      String
+  guideCamera String
+  guideScope  String
+  filterWheel String
+  focuser     String
+  controller  String
+}
+
 model User {
-  id       String @id @default(cuid())
-  name     String
+  id       Int    @id @default(autoincrement())
+  userId   String
   userName String
+  disc     String
+  joined   String
+}
+
+model Data {
+  id       Int    @id @default(autoincrement())
+  userId   String
+  lat      String
+  lon      String
+  location String
+}
+
+model Contest {
+  id          Int    @id @default(autoincrement())
+  userId      String
+  url         String
+  description String
+}
+
+model Bortle {
+  id     Int    @id @default(autoincrement())
+  userId String
+  bortle String
 }
