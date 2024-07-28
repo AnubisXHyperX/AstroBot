@@ -24,15 +24,15 @@ module.exports = {
 
       const actionRow = new ActionRowBuilder().addComponents(
         new ButtonBuilder()
-          .setCustomId('join')
+          .setCustomId(`join-${student.id}`)
           .setLabel('Join')
           .setStyle(ButtonStyle.Success),
         new ButtonBuilder()
-          .setCustomId('leave')
+          .setCustomId(`leave-${student.id}`)
           .setLabel('Leave')
           .setStyle(ButtonStyle.Danger),
         new ButtonBuilder()
-          .setCustomId('lock')
+          .setCustomId(`lock-${student.id}`)
           .setLabel('Lock')
           .setStyle(ButtonStyle.Primary)
       )
