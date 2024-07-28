@@ -62,6 +62,9 @@ module.exports = {
         case 'suggestionModal':
           modalHandler = require('./suggestion')
           break
+        case 'qualificationModal':
+          modalHandler = require('./qualificationModal')
+          break
       }
       if (modalHandler) {
         await modalHandler.execute(interaction, client)
