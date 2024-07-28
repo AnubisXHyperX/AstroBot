@@ -55,6 +55,17 @@ module.exports = {
           ephemeral: true
         })
       }
+    } else if (interaction.isModalSubmit()) {
+      const modalHandlerId = interaction.customId.split('-')[0]
+      let modalHandler
+      switch (modalHandlerId) {
+        case 'suggestionModal':
+          modalHandler = require('./suggestion')
+          break
+      }
+      if (modalHandler) {
+        await modalHandler.execute(interaction, client)
+      }
     }
   }
 }
