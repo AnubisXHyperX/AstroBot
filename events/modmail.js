@@ -86,27 +86,32 @@ module.exports = {
         channel.name.includes('-modmail') &&
         channel.topic === user.id.toString()
       ) {
-        await channel.permissionOverwrites.edit(user.id, {
-          ViewChannel: false,
-          SendMessages: false,
-          ReadMessageHistory: false
-        })
-
         await interaction.message.delete()
         const msg = await channel.send(
           `>>> ${user} This ticket will close in <t:${
             Math.floor(Date.now() / 1000) + 21
           }:R>\nThank you for contacting Astro staff <:jwst:1009707101360242720>.`
         )
-        await new Promise(resolve => setTimeout(resolve, 19000)) // wait for 19 seconds
-        await msg.delete()
-        await channel.send(
-          `>>> This ticket is now closed. Thank you for contacting Astro staff <:jwst:1009707101360242720>.`
-        )
-        await new Promise(resolve => setTimeout(resolve, 1000)) // wait for 1 second
-        const msger = await channel.send(
-          `>>> **${onDutyRole}: This modmail is now closed. Staff may communicate freely.**`
-        )
+
+        // Use a setTimeout to wait before deleting the message and sending the follow-up message
+        setTimeout(async () => {
+          await msg.delete()
+          const closeMessage = await channel.send(
+            `>>> This ticket is now closed. Thank you for contacting Astro staff <:jwst:1009707101360242720>.`
+          )
+
+          await channel.permissionOverwrites.edit(user.id, {
+            ViewChannel: false,
+            SendMessages: false,
+            ReadMessageHistory: false
+          })
+          // Wait for 1 second before sending the staff communication message
+          setTimeout(async () => {
+            await channel.send(
+              `>>> **${onDutyRole}: This modmail is now closed. Staff may communicate freely.**`
+            )
+          }, 3000)
+        }, 21000) // wait for 21 seconds before deleting the message
 
         // Here you can add logic to archive the modmail if needed, e.g. saving the message content to a database.
       } else {
@@ -130,6 +135,5 @@ module.exports = {
         ephemeral: true
       })
     }
-
   }
 }

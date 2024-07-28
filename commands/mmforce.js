@@ -8,7 +8,7 @@ module.exports = {
   async execute(interaction) {
     const { channel, user, guild } = interaction;
 
-    if (channel.name.includes('-modmail') && channel.topic === user.id.toString()) {
+    if (channel.name.includes('-modmail')) {
       await channel.delete();
       await interaction.reply({ content: 'Modmail closed.', ephemeral: true });
     } else {

@@ -29,11 +29,28 @@ module.exports = {
         case 'modmail':
           buttonHandler = require('./modmail')
           break
+        case 'mmclose':
+          buttonHandler = require('./modmail')
+          break
         case 'verify':
           buttonHandler = require('./verify')
           break
+        case 'qualification':
+          buttonHandler = require('./qualification')
+          break
       }
       await buttonHandler.execute(interaction, client)
+    } else if (interaction.isContextMenuCommand()) {
+      const command = client.commands.get(interaction.commandName)
+      try {
+        await command.execute(interaction)
+      } catch (error) {
+        console.error(error)
+        await interaction.reply({
+          content: 'There was an error while executing this command!',
+          ephemeral: true
+        })
+      }
     }
   }
 }
