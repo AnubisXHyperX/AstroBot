@@ -8,8 +8,8 @@ const {
 
 module.exports = {
   data: new SlashCommandBuilder()
-    .setName('help')
-    .setDescription('Help menu for the bot'),
+    .setName('armament')
+    .setDescription('armament menu for VTOLVR'),
 
   async execute(interaction) {
     await interaction.deferReply({ ephemeral: true });
