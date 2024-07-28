@@ -37,6 +37,9 @@ module.exports = {
         case 'qualification':
           buttonHandler = require('./qualification')
           break
+        case 'clouds':
+          buttonHandler = require('./clouds')
+          break
       }
       if (buttonHandler) {
         await buttonHandler.execute(interaction, client)
