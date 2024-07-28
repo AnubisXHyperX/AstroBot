@@ -21,7 +21,7 @@ module.exports = {
 
     const button = new ButtonBuilder()
       .setCustomId('open-modmail')
-      .setLabel('Open Modmail')
+      .setLabel('Contact Staff')
       .setStyle(ButtonStyle.Danger)
 
     const row = new ActionRowBuilder().addComponents(button)
