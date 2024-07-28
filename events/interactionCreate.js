@@ -26,19 +26,16 @@ module.exports = {
       let buttonHandler
       switch (command) {
         case 'modmail':
-          buttonHandler = require('./modmail')
+          buttonHandler = require('./buttons/modmail')
           break
         case 'mmclose':
-          buttonHandler = require('./modmail')
+          buttonHandler = require('./buttons/modmail')
           break
         case 'verify':
-          buttonHandler = require('./verify')
+          buttonHandler = require('./buttons/verify')
           break
         case 'qualification':
-          buttonHandler = require('./qualification')
-          break
-        case 'clouds':
-          buttonHandler = require('./clouds')
+          buttonHandler = require('./buttons/qualification')
           break
       }
       if (buttonHandler) {
@@ -60,13 +57,13 @@ module.exports = {
       let modalHandler
       switch (modalHandlerId) {
         case 'suggestionModal':
-          modalHandler = require('./suggestion')
+          modalHandler = require('./modals/suggestionModal')
           break
         case 'qualificationModal':
-          modalHandler = require('./qualificationModal')
+          modalHandler = require('./modals/qualificationModal')
           break
         case 'feedbackModal':
-          modalHandler = require('./feedbackModal')
+          modalHandler = require('./modals/feedbackModal')
           break
       }
       if (modalHandler) {
