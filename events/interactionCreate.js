@@ -38,7 +38,9 @@ module.exports = {
           buttonHandler = require('./qualification')
           break
       }
-      await buttonHandler.execute(interaction, client)
+      if (buttonHandler) {
+        await buttonHandler.execute(interaction, client)
+      }
     } else if (interaction.isContextMenuCommand()) {
       const command = client.commands.get(interaction.commandName)
       try {
