@@ -38,9 +38,11 @@ module.exports = {
       //     buttonHandler = require('./buttons/qualification')
       //     break
       // }
-      const buttonHandler = require(`./buttons/${command}`)
-      if (buttonHandler) {
-        await buttonHandler.execute(interaction, client)
+      if (fs.existsSync(`./buttons/${command}`)) {
+        const buttonHandler = require(`./buttons/${command}`)
+        if (buttonHandler) {
+          await buttonHandler.execute(interaction, client)
+        }
       }
     } else if (interaction.isContextMenuCommand()) {
       const command = client.commands.get(interaction.commandName)
@@ -67,9 +69,11 @@ module.exports = {
       //     modalHandler = require('./modals/feedbackModal')
       //     break
       // }
-      const modalHandler = require(`./modals/${modalHandlerId}`)
-      if (modalHandler) {
-        await modalHandler.execute(interaction, client)
+      if (fs.existsSync(`./modals/${modalHandlerId}`)) {
+        const modalHandler = require(`./modals/${modalHandlerId}`)
+        if (modalHandler) {
+          await modalHandler.execute(interaction, client)
+        }
       }
     }
   }
