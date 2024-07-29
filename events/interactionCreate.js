@@ -23,22 +23,7 @@ module.exports = {
       }
     } else if (interaction.isButton()) {
       const command = interaction.message.interaction.commandName
-      // let buttonHandler
-      // switch (command) {
-      //   case 'modmail':
-      //     buttonHandler = require('./buttons/modmail')
-      //     break
-      //   case 'mmclose':
-      //     buttonHandler = require('./buttons/modmail')
-      //     break
-      //   case 'verify':
-      //     buttonHandler = require('./buttons/verify')
-      //     break
-      //   case 'qualification':
-      //     buttonHandler = require('./buttons/qualification')
-      //     break
-      // }
-      if (fs.existsSync(`./buttons/${command}`)) {
+      if (fs.existsSync(`${__dirname}/buttons/${command}.js`)) {
         const buttonHandler = require(`./buttons/${command}`)
         if (buttonHandler) {
           await buttonHandler.execute(interaction, client)
@@ -57,19 +42,7 @@ module.exports = {
       }
     } else if (interaction.isModalSubmit()) {
       const modalHandlerId = interaction.customId.split('-')[0]
-      // let modalHandler
-      // switch (modalHandlerId) {
-      //   case 'suggestionModal':
-      //     modalHandler = require('./modals/suggestionModal')
-      //     break
-      //   case 'qualificationModal':
-      //     modalHandler = require('./modals/qualificationModal')
-      //     break
-      //   case 'feedbackModal':
-      //     modalHandler = require('./modals/feedbackModal')
-      //     break
-      // }
-      if (fs.existsSync(`./modals/${modalHandlerId}`)) {
+      if (fs.existsSync(`${__dirname}/modals/${modalHandlerId}.js`)) {
         const modalHandler = require(`./modals/${modalHandlerId}`)
         if (modalHandler) {
           await modalHandler.execute(interaction, client)
