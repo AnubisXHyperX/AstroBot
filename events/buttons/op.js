@@ -1,9 +1,4 @@
-const {
-  EmbedBuilder,
-  ActionRowBuilder,
-  ButtonBuilder,
-  ButtonStyle
-} = require('discord.js')
+const { EmbedBuilder, ActionRowBuilder } = require('discord.js')
 const { operations } = require('../../commands/op')
 
 module.exports = {
@@ -27,18 +22,29 @@ module.exports = {
 
       // Remove the user from any existing package
       operation.packages.forEach(pkg => {
-        if (pkg.position === interaction.user.id) {
-          pkg.position = null
-          const field = operation.embed.data.fields.find(
-            field => field.name === pkg.packageName
-          )
-          if (field) {
-            field.value = 'Available'
+        pkg.positions.forEach(pos => {
+          if (pos.userId === interaction.user.id) {
+            pos.userId = null
           }
+        })
+        const field = operation.embed.data.fields.find(
+          field => field.name === pkg.packageName
+        )
+        if (field) {
+          field.value = pkg.positions
+            .map(
+              pos =>
+                `${pos.slot}: ${pos.userId ? `<@${pos.userId}>` : 'Available'}`
+            )
+            .join('\n')
         }
       })
 
-      pkg.position = interaction.user.id
+      // Add the user to the new package
+      const emptyPosition = pkg.positions.find(pos => !pos.userId)
+      if (emptyPosition) {
+        emptyPosition.userId = interaction.user.id
+      }
 
       const field = operation.embed.data.fields.find(
         field => field.name === pkg.packageName
@@ -48,9 +54,15 @@ module.exports = {
         return
       }
 
-      field.value = `<@${interaction.user.id}>`
+      field.value = pkg.positions
+        .map(
+          pos => `${pos.slot}: ${pos.userId ? `<@${pos.userId}>` : 'Available'}`
+        )
+        .join('\n')
 
-      const allFilled = operation.packages.every(pkg => pkg.position !== null)
+      const allFilled = operation.packages.every(pkg =>
+        pkg.positions.every(pos => pos.userId !== null)
+      )
       if (allFilled) {
         operation.embed
           .setColor('Green')
@@ -74,8 +86,7 @@ module.exports = {
       if (allFilled) {
         await Promise.all(
           operation.packages.map(async pkg => {
-            if (pkg.position) {
-              const user = await interaction.guild.members.fetch(pkg.position)
+            if (pkg.positions.length > 0) {
               const dmEmbed = new EmbedBuilder()
                 .setTitle(`Operation: ${operation.operationName}`)
                 .setDescription(
@@ -84,11 +95,22 @@ module.exports = {
                 .setColor('Green')
                 .addFields({
                   name: pkg.packageName,
-                  value: `<@${pkg.position}>`,
+                  value: pkg.positions
+                    .map(pos => `${pos.slot}: <@${pos.userId}>`)
+                    .join('\n'),
                   inline: true
                 })
 
-              await user.send({ embeds: [dmEmbed] })
+              await Promise.all(
+                pkg.positions.map(async pos => {
+                  if (pos.userId) {
+                    const user = await interaction.guild.members.fetch(
+                      pos.userId
+                    )
+                    await user.send({ embeds: [dmEmbed] })
+                  }
+                })
+              )
             }
           })
         )

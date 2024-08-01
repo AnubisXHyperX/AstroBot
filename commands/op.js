@@ -7,6 +7,7 @@ const {
   Collection
 } = require('discord.js')
 const { v4: uuidv4 } = require('uuid')
+const dayjs = require('dayjs')
 
 const operations = new Collection()
 const phoneticAlphabet = [
@@ -56,23 +57,70 @@ module.exports = {
     )
     .addStringOption(option =>
       option
-        .setName('time_of_op')
-        .setDescription('Time of the operation')
-        .setRequired(true)
-    )
-    .addStringOption(option =>
-      option
         .setName('server_name')
         .setDescription('Server name')
         .setRequired(true)
+    )
+    .addIntegerOption(option =>
+      option
+        .setName('day')
+        .setDescription('Day of the operation')
+        .setRequired(false)
+    )
+    .addIntegerOption(option =>
+      option
+        .setName('month')
+        .setDescription('Month of the operation')
+        .setRequired(false)
+    )
+    .addIntegerOption(option =>
+      option
+        .setName('year')
+        .setDescription('Year of the operation')
+        .setRequired(false)
+    )
+    .addIntegerOption(option =>
+      option
+        .setName('hours')
+        .setDescription('Hours of the operation')
+        .setRequired(false)
+    )
+    .addIntegerOption(option =>
+      option
+        .setName('minutes')
+        .setDescription('Minutes of the operation')
+        .setRequired(false)
     ),
 
   async execute (interaction) {
     const operationName = interaction.options.getString('operation_name')
     const numPackages = interaction.options.getInteger('num_packages')
-    const timeOfOp = interaction.options.getString('time_of_op')
+    const day = interaction.options.getInteger('day')
+    const month = interaction.options.getInteger('month')
+    const year = interaction.options.getInteger('year')
+    const hours = interaction.options.getInteger('hours')
+    const minutes = interaction.options.getInteger('minutes')
     const serverName = interaction.options.getString('server_name')
 
+    let timeOfOp = dayjs().add(1, 'hour')
+    if (day && month && year && hours && minutes) {
+      timeOfOp = dayjs()
+        .year(year)
+        .month(month - 1)
+        .date(day)
+        .hour(hours)
+        .minute(minutes)
+    }
+
+    if (!timeOfOp.isValid()) {
+      await interaction.reply({
+        content: 'Invalid time provided.',
+        ephemeral: true
+      })
+      return
+    }
+
+    const formattedTimeOfOp = timeOfOp.format('YYYY-MM-DDTHH:mm:ss')
     const operationId = uuidv4().split('-')[0] // Shortened operation ID
     const packages = []
     const buttons = []
@@ -80,7 +128,13 @@ module.exports = {
     for (let i = 0; i < numPackages; i++) {
       const packageName = phoneticAlphabet[i]
       const packageId = uuidv4().split('-')[0] // Shortened package ID
-      packages.push({ packageId, packageName, position: null })
+      const positions = [
+        { slot: '1-1', userId: null },
+        { slot: '1-2', userId: null },
+        { slot: '1-3', userId: null },
+        { slot: '1-4', userId: null }
+      ]
+      packages.push({ packageId, packageName, positions })
 
       buttons.push(
         new ButtonBuilder()
@@ -92,12 +146,12 @@ module.exports = {
 
     const embed = new EmbedBuilder()
       .setTitle(`Operation: ${operationName}`)
-      .setDescription(`Time: ${timeOfOp}\nServer: ${serverName}`)
+      .setDescription(`Time: ${formattedTimeOfOp}\nServer: ${serverName}`)
       .setColor('Blue')
       .addFields(
         packages.map(pkg => ({
           name: pkg.packageName,
-          value: 'Available',
+          value: pkg.positions.map(pos => `${pos.slot}: Available`).join('\n'),
           inline: true
         }))
       )
@@ -112,7 +166,7 @@ module.exports = {
 
     operations.set(operationId, {
       operationName,
-      timeOfOp,
+      timeOfOp: formattedTimeOfOp,
       serverName,
       packages,
       embed,
