@@ -28,6 +28,8 @@ module.exports = {
         if (buttonHandler) {
           await buttonHandler.execute(interaction, client)
         }
+      } else {
+        console.log('Button Handler Not Found')
       }
     } else if (interaction.isContextMenuCommand()) {
       const command = client.commands.get(interaction.commandName)
